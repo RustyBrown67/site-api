@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import Site from './site';
+//let relationship = require('mongoose-relationship');
+//import relationship from 'mongoose-relationship';
 let Schema = mongoose.Schema;
 
 let NoteSchema = new Schema({
@@ -16,4 +18,5 @@ let NoteSchema = new Schema({
   }
 });
 
+//NoteSchema.plugin(relationship, { relationshipPathName: "site" });
 module.exports = mongoose.model('Note', NoteSchema);

@@ -31,5 +31,5 @@ var EquipSchema = new Schema({
   }
 });
 
-module.exports = _mongoose2.default.model('Equipment', EquipmentSchema);
+module.exports = _mongoose2.default.model('Equipment', EquipSchema);
 //# sourceMappingURL=equipment.js.map

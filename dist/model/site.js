@@ -8,9 +8,19 @@ var _note = require('./note');
 
 var _note2 = _interopRequireDefault(_note);
 
+var _contact = require('./contact');
+
+var _contact2 = _interopRequireDefault(_contact);
+
+var _equipment = require('./equipment');
+
+var _equipment2 = _interopRequireDefault(_equipment);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Schema = _mongoose2.default.Schema;
+//import relationship from 'mongoose-relationship';
+
 
 var SiteSchema = new Schema({
   sitetype: {

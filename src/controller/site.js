@@ -120,7 +120,7 @@ export default({ config, db }) => {
       });
     });
   });
-
+  // **************************************************************//
   // add note for a specific site id
   // '/v1/site/notes/add/:id'
   api.post('/notes/add/:id', (req, res) => {
@@ -160,6 +160,17 @@ export default({ config, db }) => {
     });
   });
 
+  // get an individual note by note id
+  // '/v1/site/notes/:id'
+  api.get('/notes/:id', (req, res) => {
+    Note.findById(req.params.id, (err, note) => {
+      if (err) {
+        res.send(err);
+      }
+      res.json(note);
+    });
+  });
+
   // '/v1/site/notes/:id' - Update
   api.put('/notes/:id', (req, res) => {
     Note.findById(req.params.id, (err, note) => {
@@ -181,8 +192,8 @@ export default({ config, db }) => {
 
   //Delete individual note by id
   // 'v1/site/notes/:id' - Delete
-  api.delete('/notes/:id', (req, res) => {
-    Note.findByIdAndRemove(req.params.id, (err, note) => {
+api.delete('/notes/:id', (req, res) => {
+    Note.findById(req.params.id, (err, note) => {
         if (err) {
             res.status(500).send(err);
             return;
@@ -191,37 +202,33 @@ export default({ config, db }) => {
             res.status(404).send("Note not found");
             return;
         }
-        //let siteid = note.site;
-        //res.json({ message: siteid});
-        // Note.remove({
-        //     _id: req.params.id
-        // }, (err, note) => {
-        //     if (err) {
-        //         res.status(500).send(err);
-        //         return;
-        //     }
-        // });
-        //Site.findById(siteid, (err, site) => {
-          //reIndex: "sites";
-          // site.notes.remove({
-          //   _id: req.params.id
-          // }, (err, site) => {
-          //   if (err) {
-          //     res.status(500).send(err);
-          //     return;
-          //   }
-          // })
-          // site.save((err, site) => {
-          //   if (err) {
-          //     res.send(err);
-          //   }
-              res.json({ message: 'Site note removed!'});
-              //sites.reindex;
-          //  });
-          });
+        // Set a variable with the site id
+        let siteid = note.site;
+        // Get the Site
+        Site.findById(siteid, (err, site) => {
+            // Remove (pull) the note id from the notes array
+            site.notes.pull(note);
+            // Save the site with the removed array element
+            site.save(err => {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+                // Finally remove the actual note
+                Note.remove({
+                    _id: req.params.id
+                }, (err, note) => {
+                    if (err) {
+                        res.status(500).send(err);
+                        return;
+                    }
+                    res.json({message: 'Site note removed!'});
+                });
+            });
         });
-      //});
-
+    });
+});
+  // **************************************************************//
   // add contact for a specific site id
   // '/v1/site/contacts/add/:id'
   api.post('/contacts/add/:id', (req, res) => {
@@ -263,6 +270,68 @@ export default({ config, db }) => {
     });
   });
 
+  // '/v1/site/contacts/:id' - Update
+  api.put('/contacts/:id', (req, res) => {
+    Contact.findById(req.params.id, (err, contact) => {
+      if (err) {
+        res.send(err);
+      }
+
+      contact.name = req.body.name;
+      contact.telmobile = req.body.telmobile;
+      contact.email = req.body.email;
+      contact.teloffice = req.body.teloffice;
+      contact.position = req.body.position;
+
+      contact.save((err, contact) => {
+        if (err) {
+          res.send(err);
+        }
+          res.json({ message: 'Site contact updated!'});
+      });
+    });
+  });
+
+  //Delete individual contact by id
+  // 'v1/site/contacts/:id' - Delete
+  api.delete('/contacts/:id', (req, res) => {
+    Contact.findById(req.params.id, (err, contact) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        if (contact === null) {
+            res.status(404).send("Contact not found");
+            return;
+        }
+        // Set a variable with the site id
+        let siteid = contact.site;
+        // Get the Site
+        Site.findById(siteid, (err, site) => {
+            // Remove (pull) the contact id from the notes array
+            site.contacts.pull(contact);
+            // Save the site with the removed array element
+            site.save(err => {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+                // Finally remove the actual contact
+                Contact.remove({
+                    _id: req.params.id
+                }, (err, contact) => {
+                    if (err) {
+                        res.status(500).send(err);
+                        return;
+                    }
+                    res.json({message: 'Site contact removed!'});
+                });
+            });
+        });
+    });
+  });
+
+  // **************************************************************//
   // add equipment for a specific site id
   // '/v1/site/equipments/add/:id'
   api.post('/equipments/add/:id', (req, res) => {
@@ -307,6 +376,72 @@ export default({ config, db }) => {
     });
   });
 
+  // update equipment for a specific equipment id
+  // '/v1/site/equipment/:id' - Update
+  api.put('/equipments/:id', (req, res) => {
+    Equipment.findById(req.params.id, (err, equipment) => {
+      if (err) {
+        res.send(err);
+      }
+
+      equipment.equipment = req.body.equipment;
+      equipment.company = req.body.company;
+      equipment.contactname = req.body.contactname;
+      equipment.contactpos = req.body.contactpos;
+      equipment.contacttelm = req.body.contacttelm;
+      equipment.contacttelo = req.body.contacttelo;
+      equipment.contactemail = req.body.contactemail;
+      equipment.text = req.body.text
+
+      equipment.save((err, equipment) => {
+        if (err) {
+          res.send(err);
+        }
+          res.json({ message: 'Site equipment updated!'});
+      });
+    });
+  });
+
+  //Delete individual equipment by id
+  // 'v1/site/equipment/:id' - Delete
+api.delete('/equipments/:id', (req, res) => {
+    Equipment.findById(req.params.id, (err, equipment) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        if (equipment === null) {
+            res.status(404).send("Equipment not found");
+            return;
+        }
+        // Set a variable with the site id
+        let siteid = equipment.site;
+        // Get the Site
+        Site.findById(siteid, (err, site) => {
+            // Remove (pull) the equipment id from the equipments array
+            site.equipments.pull(equipment);
+            // Save the site with the removed array element
+            site.save(err => {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+                // Finally remove the actual equipment
+                Equipment.remove({
+                    _id: req.params.id
+                }, (err, equipment) => {
+                    if (err) {
+                        res.status(500).send(err);
+                        return;
+                    }
+                    res.json({message: 'Site equipment removed!'});
+                });
+            });
+        });
+    });
+});
+
+  // **************************************************************//
   // retrieve all sites of a specific type
   // '/v1/site/sitetype/:sitetype'
   api.get('/sitetype/:sitetype', (req, res) => {

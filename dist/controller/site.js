@@ -42,7 +42,7 @@ exports.default = function (_ref) {
 
   // CRUD - Create Read Update Delete
   // '/v1/site/add' - Create
-  api.post('/add', _authMiddleware.authenticate, function (req, res) {
+  api.post('/add', function (req, res) {
     //add word authenticate to lock down
     var newSite = new _site2.default();
     newSite.sitetype = req.body.sitetype;
@@ -82,7 +82,7 @@ exports.default = function (_ref) {
   });
 
   // '/v1/site/:id' - Update
-  api.put('/:id', _authMiddleware.authenticate, function (req, res) {
+  api.put('/:id', function (req, res) {
     _site2.default.findById(req.params.id, function (err, site) {
       if (err) {
         res.send(err);
@@ -105,7 +105,7 @@ exports.default = function (_ref) {
   });
 
   // '/v1/site/:id' - Delete
-  api.delete('/:id', _authMiddleware.authenticate, function (req, res) {
+  api.delete('/:id', function (req, res) {
     _site2.default.findById(req.params.id, function (err, site) {
       if (err) {
         res.status(500).send(err);
@@ -153,7 +153,7 @@ exports.default = function (_ref) {
 
   // add note for a specific site id
   // '/v1/site/notes/add/:id'
-  api.post('/notes/add/:id', _authMiddleware.authenticate, function (req, res) {
+  api.post('/notes/add/:id', function (req, res) {
     _site2.default.findById(req.params.id, function (err, site) {
       if (err) {
         res.send(err);
@@ -162,6 +162,7 @@ exports.default = function (_ref) {
 
       newNote.title = req.body.title;
       newNote.text = req.body.text;
+      newNote.date = req.body.date;
       newNote.site = site._id;
       newNote.save(function (err, note) {
         if (err) {
@@ -189,9 +190,65 @@ exports.default = function (_ref) {
     });
   });
 
+  // '/v1/site/notes/:id' - Update
+  api.put('/notes/:id', function (req, res) {
+    _note2.default.findById(req.params.id, function (err, note) {
+      if (err) {
+        res.send(err);
+      }
+      note.title = req.body.title;
+      note.text = req.body.text;
+      note.date = req.body.date;
+
+      note.save(function (err, note) {
+        if (err) {
+          res.send(err);
+        }
+        res.json({ message: 'Site note updated!' });
+      });
+    });
+  });
+
+  //Delete individual note by id
+  // 'v1/site/notes/:id' - Delete
+  api.delete('/notes/:id', function (req, res) {
+    _note2.default.findByIdAndRemove(req.params.id, function (err, note) {
+      if (err) {
+        res.status(500).send(err);
+        return;
+      }
+      if (note === null) {
+        res.status(404).send("Note not found");
+        return;
+      }
+      var siteid = note.site;
+      _site2.default.findById(siteid, function (err, site) {
+        site.notes.remove(req.params.id);
+        //delnote.remove;
+        //  Site.update({_id: {$in: site.notes}},
+        //  {$pull: {note: note.siteid}});
+        // site.notes.remove({
+        //   _id: req.params.id
+        // }, (err, site) => {
+        //   if (err) {
+        //     res.status(500).send(err);
+        //     return;
+        //   }
+        // })
+        //site.save((err, site) => {
+        //   if (err) {
+        //     res.send(err);
+        //   }
+        res.json({ message: 'Site note removed!' });
+        //sites.reindex;
+      });
+      //});
+    });
+  });
+
   // add contact for a specific site id
   // '/v1/site/contacts/add/:id'
-  api.post('/contacts/add/:id', _authMiddleware.authenticate, function (req, res) {
+  api.post('/contacts/add/:id', function (req, res) {
     _site2.default.findById(req.params.id, function (err, site) {
       if (err) {
         res.send(err);
@@ -232,7 +289,7 @@ exports.default = function (_ref) {
 
   // add equipment for a specific site id
   // '/v1/site/equipments/add/:id'
-  api.post('/equipments/add/:id', _authMiddleware.authenticate, function (req, res) {
+  api.post('/equipments/add/:id', function (req, res) {
     _site2.default.findById(req.params.id, function (err, site) {
       if (err) {
         res.send(err);

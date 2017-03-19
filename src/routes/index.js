@@ -5,6 +5,7 @@ import initializeDb from '../db';
 import site from '../controller/site';
 import account from '../controller/account';
 
+
 let router = express();
 
   //connect to db
@@ -15,6 +16,7 @@ let router = express();
   //api routes v1 (/v1)
   router.use('/site', site({ config, db }));
   router.use('/account', account({ config, db }));
+
 
 });
 

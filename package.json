@@ -34,7 +34,8 @@
     "mongoose": "^4.8.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^4.0.0"
+    "passport-local-mongoose": "^4.0.0",
+    "readline-sync": "^1.4.6"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
@@ -44,5 +45,13 @@
     "babel-preset-stage-0": "^6.22.0",
     "eslint": "^3.14.1",
     "nodemon": "^1.11.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RustyBrown67/site-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RustyBrown67/site-api/issues"
+  },
+  "homepage": "https://github.com/RustyBrown67/site-api#readme"
 }

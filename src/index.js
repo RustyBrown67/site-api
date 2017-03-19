@@ -2,7 +2,9 @@ import http from 'http';
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+//import mongoose-relationship from 'mongoose-relationship';
 import passport from 'passport';
+//const relationship = require('mongoose-relationship').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
 // Could have also used;
 // import { Strategy as LocalStrategy } from 'passport-local';
@@ -35,6 +37,6 @@ passport.deserializeUser(Account.deserializeUser());
 app.use('/v1', routes);
 
 app.server.listen(config.port);
-console.log('Started on port ${app.server.address().port}');
+console.log(app.server.address().port);
 
 export default app;

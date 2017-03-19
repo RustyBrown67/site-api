@@ -38,7 +38,7 @@ var router = (0, _express2.default)();
   //internal middleware
   //router.use(middleware({ config, db }));
   //api routes v1 (/v1)
-  router.use('/site', foodtruck({ config: _config2.default, db: db }));
+  router.use('/site', (0, _site2.default)({ config: _config2.default, db: db }));
   router.use('/account', (0, _account2.default)({ config: _config2.default, db: db }));
 });
 
